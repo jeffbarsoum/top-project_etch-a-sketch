@@ -45,4 +45,20 @@ body {
   background-color: #443f40 ;
 }
 
+.pixel-top-left {
+  border-top-left-radius: 20px;
+}
+
+.pixel-bottom-left {
+  border-bottom-left-radius: 20px;
+}
+.pixel-top-right {
+  border-top-right-radius: 20px;
+}
+
+.pixel-bottom-right {
+  border-bottom-right-radius: 20px;
+}
+
+
 

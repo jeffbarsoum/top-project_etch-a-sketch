@@ -1,0 +1,48 @@
+body {
+  background-color: #c30a18;
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.heading {
+  /* display: block; */
+  color: #adad4b;
+  font-size: 14px;
+  font-style: italic;
+  /* flex: 0 1 auto; */
+}
+
+.heading .main {
+  font-size: 42px;
+  margin: 0px 30px;
+}
+
+.grid {
+  background-color: #bcb8b9;
+  border-radius: 20px;
+  display: flex;
+  width: 80%;
+  height: 80%;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1 1 auto;
+}
+
+.pixel {
+  display: flex;
+  flex: 1 1 auto;
+}
+
+.pixel-draw {
+  background-color: #443f40 ;
+}
+
+

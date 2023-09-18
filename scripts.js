@@ -11,3 +11,10 @@ for (let i = 0; i < pixelCount; i++) {
 	}
 	grid.appendChild(column);
 }
+
+const pixels = document.querySelectorAll(".pixel");
+pixels.forEach((pixel) => {
+	pixel.addEventListener("mouseenter", (event) => {
+		pixel.classList.add("pixel-draw");
+	});
+});

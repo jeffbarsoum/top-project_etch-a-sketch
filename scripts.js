@@ -1,21 +1,23 @@
-const pixelCount = 16;
+const defaultPixelCount = 16;
 
-createGrid(pixelCount);
+createGrid(defaultPixelCount);
 
-addGridShader();
+addGridShader(shadePixel);
 
 ///////////////////////////////////////////////////////////////////////////
 // Functions
 ///////////////////////////////////////////////////////////////////////////
 
-function addGridShader() {
+function addGridShader(shader) {
 	const pixels = document.querySelectorAll(".pixel");
 	pixels.forEach((pixel) => {
-		pixel.addEventListener("mouseenter", shadePixel);
+		pixel.addEventListener("mouseenter", shader);
 	});
 }
 
-function shadePixel() {
+function shadePixel(event) {
+	// console.log(this);
+	// console.log(event);
 	if (!this.classList.contains("pixel-draw")) {
 		this.classList.add("pixel-draw");
 		this.classList.add("brightness-100");
@@ -37,6 +39,9 @@ function shadePixel() {
 function createGrid(pixelCount) {
 	const grid = document.querySelector(".grid");
 	grid.innerHTML = "";
+
+	const resolutionButton = document.querySelector(".set-resolution");
+	resolutionButton.textContent = `Current: ${pixelCount} Sq. Pixels`;
 
 	for (let i = 0; i < pixelCount; i++) {
 		const column = document.createElement("div");

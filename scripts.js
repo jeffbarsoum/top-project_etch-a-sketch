@@ -3,10 +3,12 @@
 ///////////////////////////////////////////////////////////////////////////
 
 const defaultPixelCount = 16;
+const defaultPixelColor = "#443f40";
+let currentPixelColor = defaultPixelColor;
 
 createGrid(defaultPixelCount);
 
-addGridShader(darkenPixel);
+addGridShader(shadePixel, -10);
 
 const buttonSetResolution = document.querySelector(".set-resolution");
 const buttonPickPenColor = document.querySelector(".pick-color");
@@ -16,6 +18,7 @@ const buttonEraser = document.querySelector(".eraser");
 const buttonClearGrid = document.querySelector(".clear-grid");
 
 buttonSetResolution.addEventListener("click", setResolution);
+buttonPickPenColor.addEventListener("change", setColor);
 
 ///////////////////////////////////////////////////////////////////////////
 // Functions
@@ -36,49 +39,42 @@ function setResolution() {
 	} while (!isValidSelection);
 
 	createGrid(resolution ?? defaultPixelCount);
-	addGridShader(darkenPixel);
+	addGridShader(shadePixel, -10);
 }
 
-function addGridShader(shader) {
+function setColor() {
+	const colorInput = document.querySelector(".pick-color").value;
+	currentPixelColor = colorInput;
+}
+
+function addGridShader(shader, ...args) {
 	const pixels = document.querySelectorAll(".pixel");
 	pixels.forEach((pixel) => {
-		pixel.addEventListener("mouseenter", shader);
+		pixel.addEventListener("mouseenter", (event) => {
+			console.log(event.target);
+			shader(event.target, ...args);
+		});
 	});
 }
 
-function darkenPixel() {
-	if (!this.classList.contains("pixel-draw")) {
-		this.classList.add("pixel-draw");
-		this.classList.add("brightness-100");
+function shadePixel(pixel, increment) {
+	if (!pixel.classList.contains("pixel-draw")) {
+		pixel.classList.add("pixel-draw");
+		pixel.classList.add("brightness-100");
+		pixel.style.backgroundColor = currentPixelColor;
 	} else {
-		this.classList.forEach((className) => {
+		pixel.classList.forEach((className) => {
 			if (className.includes("brightness")) {
 				const currentBrightness = +className.replace("brightness-", "");
 				if (currentBrightness === 0) return;
-				const updatedBrightness = changeBrightness(currentBrightness, -10);
+				const updatedBrightness = changeBrightness(
+					currentBrightness,
+					increment,
+				);
 
-				this.classList.remove(className);
-				this.classList.add(`brightness-${updatedBrightness}`);
-				this.style.filter = `brightness(${updatedBrightness}%)`;
-			}
-		});
-	}
-}
-
-function lightenPixel() {
-	if (!this.classList.contains("pixel-draw")) {
-		this.classList.add("pixel-draw");
-		this.classList.add("brightness-100");
-	} else {
-		this.classList.forEach((className) => {
-			if (className.includes("brightness")) {
-				const currentBrightness = +className.replace("brightness-", "");
-				if (currentBrightness === 0) return;
-				const updatedBrightness = changeBrightness(currentBrightness, 10);
-
-				this.classList.remove(className);
-				this.classList.add(`brightness-${updatedBrightness}`);
-				this.style.filter = `brightness(${updatedBrightness}%)`;
+				pixel.classList.remove(className);
+				pixel.classList.add(`brightness-${updatedBrightness}`);
+				pixel.style.filter = `brightness(${updatedBrightness}%)`;
 			}
 		});
 	}

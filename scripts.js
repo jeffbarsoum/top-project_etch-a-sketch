@@ -1,12 +1,43 @@
+///////////////////////////////////////////////////////////////////////////
+// Core Logic
+///////////////////////////////////////////////////////////////////////////
+
 const defaultPixelCount = 16;
 
 createGrid(defaultPixelCount);
 
-addGridShader(shadePixel);
+addGridShader(darkenPixel);
+
+const buttonSetResolution = document.querySelector(".set-resolution");
+const buttonPickPenColor = document.querySelector(".pick-color");
+const buttonLighten = document.querySelector(".lighten");
+const buttonDarken = document.querySelector(".darken");
+const buttonEraser = document.querySelector(".eraser");
+const buttonClearGrid = document.querySelector(".clear-grid");
+
+buttonSetResolution.addEventListener("click", setResolution);
 
 ///////////////////////////////////////////////////////////////////////////
 // Functions
 ///////////////////////////////////////////////////////////////////////////
+
+function setResolution() {
+	let resolution = defaultPixelCount;
+	let isValidSelection = false;
+
+	do {
+		resolution = +prompt(
+			"Please pick a resolution (in square pixels) between 1 and 100",
+		);
+
+		const isInt = Number.isInteger(resolution);
+		isValidSelection = isInt && resolution > 0 && resolution <= 100;
+		if (!isValidSelection) alert("Please insert an integer between 1 and 100!");
+	} while (!isValidSelection);
+
+	createGrid(resolution ?? defaultPixelCount);
+	addGridShader(darkenPixel);
+}
 
 function addGridShader(shader) {
 	const pixels = document.querySelectorAll(".pixel");
@@ -15,9 +46,7 @@ function addGridShader(shader) {
 	});
 }
 
-function shadePixel(event) {
-	// console.log(this);
-	// console.log(event);
+function darkenPixel() {
 	if (!this.classList.contains("pixel-draw")) {
 		this.classList.add("pixel-draw");
 		this.classList.add("brightness-100");
@@ -36,7 +65,26 @@ function shadePixel(event) {
 	}
 }
 
-function createGrid(pixelCount) {
+function lightenPixel() {
+	if (!this.classList.contains("pixel-draw")) {
+		this.classList.add("pixel-draw");
+		this.classList.add("brightness-100");
+	} else {
+		this.classList.forEach((className) => {
+			if (className.includes("brightness")) {
+				const currentBrightness = +className.replace("brightness-", "");
+				if (currentBrightness === 0) return;
+				const updatedBrightness = changeBrightness(currentBrightness, 10);
+
+				this.classList.remove(className);
+				this.classList.add(`brightness-${updatedBrightness}`);
+				this.style.filter = `brightness(${updatedBrightness}%)`;
+			}
+		});
+	}
+}
+
+function createGrid(pixelCount = defaultPixelCount) {
 	const grid = document.querySelector(".grid");
 	grid.innerHTML = "";
 
@@ -64,5 +112,5 @@ function createGrid(pixelCount) {
 
 function changeBrightness(currentBrightness, increment) {
 	// only return values between 0 and 100
-	return Math.min(100, Math.max(0, currentBrightness + increment));
+	return Math.min(200, Math.max(0, currentBrightness + increment));
 }

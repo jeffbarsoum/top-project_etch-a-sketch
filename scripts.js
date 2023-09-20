@@ -7,9 +7,11 @@ const defaultPixelColor = "#443f40";
 let currentPixelColor = defaultPixelColor;
 let currentPixelCount = defaultPixelCount;
 let currentShader;
+let rainbowMode = false;
 
 const buttonSetResolution = document.querySelector(".set-resolution");
 const buttonPickPenColor = document.querySelector(".pick-color");
+const buttonRainbowMode = document.querySelector(".rainbow-mode");
 const buttonLighten = document.querySelector(".lighten");
 const buttonDarken = document.querySelector(".darken");
 const buttonEraser = document.querySelector(".eraser");
@@ -20,6 +22,7 @@ createGrid();
 setDarken();
 buttonSetResolution.addEventListener("click", setResolution);
 buttonPickPenColor.addEventListener("change", setColor);
+buttonRainbowMode.addEventListener("click", setRainbowMode);
 buttonClearGrid.addEventListener("click", clearGrid);
 buttonDarken.addEventListener("click", setDarken);
 buttonLighten.addEventListener("click", setLighten);
@@ -54,20 +57,32 @@ function setColor() {
 }
 
 function setDarken() {
-	addGridShader(shadePixel, -10);
+	addGridShader(shadePixel, -10, rainbowMode);
 	disableButton(buttonDarken);
 	enableButton(buttonLighten);
 }
 
 function setLighten() {
-	addGridShader(shadePixel, 10);
+	addGridShader(shadePixel, 10, rainbowMode);
 	disableButton(buttonLighten);
 	enableButton(buttonDarken);
 }
 
 function setEraser() {}
 
-function setRainbowMode() {}
+function setRainbowMode() {
+	addGridShader(shadePixel, -10, !rainbowMode);
+	rainbowMode = !rainbowMode;
+	if (rainbowMode) {
+		buttonRainbowMode.textContent = "Rainbow! 🌈";
+		buttonRainbowMode.classList.add("red");
+		buttonRainbowMode.classList.remove("white");
+	} else {
+		buttonRainbowMode.textContent = "Color Mode";
+		buttonRainbowMode.classList.add("white");
+		buttonRainbowMode.classList.remove("red");
+	}
+}
 
 function enableButton(button) {
 	button.classList.remove("disabled");
@@ -86,8 +101,7 @@ function clearGrid() {
 
 function addGridShader(shader, ...args) {
 	const pixels = document.querySelectorAll(".pixel");
-	// const shaderToRemove = currentShader;
-	// const shaderToAdd = (event) => shader(event.target, ...args);
+
 	pixels.forEach((pixel) => {
 		pixel.removeEventListener("mouseenter", pixel.fn);
 		pixel.addEventListener(
@@ -97,28 +111,13 @@ function addGridShader(shader, ...args) {
 	});
 }
 
-// function addLightenShader() {
-// 	removeGridShader(shadePixel);
-// 	addGridShader(shadePixel, 10);
-// }
-//
-// function addDarkenShader() {
-// 	removeGridShader(shadePixel);
-// 	addGridShader(shadePixel, -10);
-// }
-//
-// function removeGridShader(shader) {
-// 	const pixels = document.querySelectorAll(".pixel");
-// 	pixels.forEach((pixel) => {
-// 		pixel.removeEventListener("mouseenter", shader);
-// 	});
-// }
-//
 function shadePixel(pixel, increment, colorRandom = false) {
 	if (!pixel.classList.contains("pixel-draw")) {
 		pixel.classList.add("pixel-draw");
 		pixel.classList.add("brightness-100");
-		pixel.style.backgroundColor = currentPixelColor;
+		pixel.style.backgroundColor = colorRandom
+			? getRandomColor()
+			: currentPixelColor;
 	} else {
 		pixel.classList.forEach((className) => {
 			if (className.includes("brightness")) {
@@ -137,7 +136,14 @@ function shadePixel(pixel, increment, colorRandom = false) {
 	}
 }
 
-function getRandomColor() {}
+function getRandomColor() {
+	const letters = "0123456789ABCDEF";
+	let color = "#";
+	for (let i = 0; i < 6; i++) {
+		color += letters[Math.floor(Math.random() * 16)];
+	}
+	return color;
+}
 
 function createGrid(pixelCount = defaultPixelCount) {
 	const grid = document.querySelector(".grid");

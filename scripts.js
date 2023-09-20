@@ -6,10 +6,7 @@ const defaultPixelCount = 16;
 const defaultPixelColor = "#443f40";
 let currentPixelColor = defaultPixelColor;
 let currentPixelCount = defaultPixelCount;
-
-createGrid();
-
-addGridShader(shadePixel, -10);
+let currentShader;
 
 const buttonSetResolution = document.querySelector(".set-resolution");
 const buttonPickPenColor = document.querySelector(".pick-color");
@@ -18,9 +15,14 @@ const buttonDarken = document.querySelector(".darken");
 const buttonEraser = document.querySelector(".eraser");
 const buttonClearGrid = document.querySelector(".clear-grid");
 
+// addGridShader(shadePixel, -10);
+createGrid();
+setDarken();
 buttonSetResolution.addEventListener("click", setResolution);
 buttonPickPenColor.addEventListener("change", setColor);
 buttonClearGrid.addEventListener("click", clearGrid);
+buttonDarken.addEventListener("click", setDarken);
+buttonLighten.addEventListener("click", setLighten);
 
 ///////////////////////////////////////////////////////////////////////////
 // Functions
@@ -42,7 +44,8 @@ function setResolution() {
 
 	createGrid(resolution ?? currentPixelCount);
 	currentPixelCount = resolution;
-	addGridShader(shadePixel, -10);
+	// addGridShader(shadePixel, -10);
+	setDarken();
 }
 
 function setColor() {
@@ -50,13 +53,31 @@ function setColor() {
 	currentPixelColor = colorInput;
 }
 
-function setDarken() {}
+function setDarken() {
+	addGridShader(shadePixel, -10);
+	disableButton(buttonDarken);
+	enableButton(buttonLighten);
+}
 
-function setLighten() {}
+function setLighten() {
+	addGridShader(shadePixel, 10);
+	disableButton(buttonLighten);
+	enableButton(buttonDarken);
+}
 
 function setEraser() {}
 
 function setRainbowMode() {}
+
+function enableButton(button) {
+	button.classList.remove("disabled");
+	button.removeAttribute("disabled");
+}
+
+function disableButton(button) {
+	button.classList.add("disabled");
+	button.setAttribute("disabled", true);
+}
 
 function clearGrid() {
 	createGrid(currentPixelCount);
@@ -65,15 +86,35 @@ function clearGrid() {
 
 function addGridShader(shader, ...args) {
 	const pixels = document.querySelectorAll(".pixel");
+	// const shaderToRemove = currentShader;
+	// const shaderToAdd = (event) => shader(event.target, ...args);
 	pixels.forEach((pixel) => {
-		pixel.addEventListener("mouseenter", (event) => {
-			// console.log(event.target);
-			shader(event.target, ...args);
-		});
+		pixel.removeEventListener("mouseenter", pixel.fn);
+		pixel.addEventListener(
+			"mouseenter",
+			(pixel.fn = (event) => shader(event.target, ...args)),
+		);
 	});
 }
 
-function shadePixel(pixel, increment) {
+// function addLightenShader() {
+// 	removeGridShader(shadePixel);
+// 	addGridShader(shadePixel, 10);
+// }
+//
+// function addDarkenShader() {
+// 	removeGridShader(shadePixel);
+// 	addGridShader(shadePixel, -10);
+// }
+//
+// function removeGridShader(shader) {
+// 	const pixels = document.querySelectorAll(".pixel");
+// 	pixels.forEach((pixel) => {
+// 		pixel.removeEventListener("mouseenter", shader);
+// 	});
+// }
+//
+function shadePixel(pixel, increment, colorRandom = false) {
 	if (!pixel.classList.contains("pixel-draw")) {
 		pixel.classList.add("pixel-draw");
 		pixel.classList.add("brightness-100");
@@ -95,6 +136,8 @@ function shadePixel(pixel, increment) {
 		});
 	}
 }
+
+function getRandomColor() {}
 
 function createGrid(pixelCount = defaultPixelCount) {
 	const grid = document.querySelector(".grid");
@@ -123,5 +166,5 @@ function createGrid(pixelCount = defaultPixelCount) {
 
 function changeBrightness(currentBrightness, increment) {
 	// only return values between 0 and 100
-	return Math.min(200, Math.max(0, currentBrightness + increment));
+	return Math.max(0, currentBrightness + increment);
 }

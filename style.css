@@ -53,7 +53,8 @@ button {
   text-align: center;
 }
 
-button:active {
+button:active,
+.disabled {
   box-shadow: 0 2px #777;
   transform: translateY(2px);
   color: #443f40;
@@ -85,8 +86,11 @@ button:active {
 
 .red:active,
 .white:active,
-.disabled {
+.disabled,
+.disabled:active,
+.disabled:hover {
   color: #443f40;
+  border-color: #443f40;
   background-color: #bcb8b9;
 }
 

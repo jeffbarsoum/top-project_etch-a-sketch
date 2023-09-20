@@ -96,19 +96,20 @@ function disableButton(button) {
 
 function clearGrid() {
 	createGrid(currentPixelCount);
-	addGridShader(shadePixel, -10);
+	addGridShader();
 }
 
 function addGridShader(shader, ...args) {
 	const pixels = document.querySelectorAll(".pixel");
-
+	currentShader = !shader
+		? currentShader
+		: (event) => shader(event.target, ...args);
 	pixels.forEach((pixel) => {
 		pixel.removeEventListener("mouseenter", pixel.fn);
-		pixel.addEventListener(
-			"mouseenter",
-			(pixel.fn = (event) => shader(event.target, ...args)),
-		);
+		pixel.addEventListener("mouseenter", currentShader);
+		pixel.fn = currentShader;
 	});
+	return currentShader;
 }
 
 function shadePixel(pixel, increment, colorRandom = false) {

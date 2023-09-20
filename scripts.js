@@ -5,8 +5,9 @@
 const defaultPixelCount = 16;
 const defaultPixelColor = "#443f40";
 let currentPixelColor = defaultPixelColor;
+let currentPixelCount = defaultPixelCount;
 
-createGrid(defaultPixelCount);
+createGrid();
 
 addGridShader(shadePixel, -10);
 
@@ -19,13 +20,14 @@ const buttonClearGrid = document.querySelector(".clear-grid");
 
 buttonSetResolution.addEventListener("click", setResolution);
 buttonPickPenColor.addEventListener("change", setColor);
+buttonClearGrid.addEventListener("click", clearGrid);
 
 ///////////////////////////////////////////////////////////////////////////
 // Functions
 ///////////////////////////////////////////////////////////////////////////
 
 function setResolution() {
-	let resolution = defaultPixelCount;
+	let resolution = currentPixelCount;
 	let isValidSelection = false;
 
 	do {
@@ -38,7 +40,8 @@ function setResolution() {
 		if (!isValidSelection) alert("Please insert an integer between 1 and 100!");
 	} while (!isValidSelection);
 
-	createGrid(resolution ?? defaultPixelCount);
+	createGrid(resolution ?? currentPixelCount);
+	currentPixelCount = resolution;
 	addGridShader(shadePixel, -10);
 }
 
@@ -47,11 +50,24 @@ function setColor() {
 	currentPixelColor = colorInput;
 }
 
+function setDarken() {}
+
+function setLighten() {}
+
+function setEraser() {}
+
+function setRainbowMode() {}
+
+function clearGrid() {
+	createGrid(currentPixelCount);
+	addGridShader(shadePixel, -10);
+}
+
 function addGridShader(shader, ...args) {
 	const pixels = document.querySelectorAll(".pixel");
 	pixels.forEach((pixel) => {
 		pixel.addEventListener("mouseenter", (event) => {
-			console.log(event.target);
+			// console.log(event.target);
 			shader(event.target, ...args);
 		});
 	});
@@ -97,7 +113,6 @@ function createGrid(pixelCount = defaultPixelCount) {
 		}
 		grid.appendChild(column);
 	}
-
 	// add special formatting to the corner pixels to preserve rounded corners
 	// console.log(grid.firstElementChild.firstElementChild);
 	grid.firstElementChild.firstElementChild.classList.add("pixel-top-left");

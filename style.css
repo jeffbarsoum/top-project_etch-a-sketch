@@ -25,7 +25,7 @@ span {
 
 .seperator {
   min-height: 10px;
-  background-color: #67672d;
+  background-color: #817a56;
   width: 80%;
   border-radius: 20px;
   margin: 10px 25%;
@@ -84,14 +84,17 @@ button:active {
 }
 
 .red:active,
-.white:active {
+.white:active,
+.disabled {
   color: #443f40;
   background-color: #bcb8b9;
 }
 
 .heading {
-  /* display: block; */
-  color: #adad4b;
+  display: flex;
+  align-items: flex-end;
+  padding: 10px 10px;
+  color: #d8cc90;
   font-size: 14px;
   font-style: italic;
   /* flex: 0 1 auto; */

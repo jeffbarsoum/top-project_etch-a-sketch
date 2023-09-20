@@ -4,10 +4,14 @@
 
 const defaultPixelCount = 16;
 const defaultPixelColor = "#443f40";
+const defaultErasedColor = "#bcb8b9";
+
 let currentPixelColor = defaultPixelColor;
 let currentPixelCount = defaultPixelCount;
 let currentShader;
 let rainbowMode = false;
+let eraserMode = false;
+let lightenMode = false;
 
 const buttonSetResolution = document.querySelector(".set-resolution");
 const buttonPickPenColor = document.querySelector(".pick-color");
@@ -26,6 +30,7 @@ buttonRainbowMode.addEventListener("click", setRainbowMode);
 buttonClearGrid.addEventListener("click", clearGrid);
 buttonDarken.addEventListener("click", setDarken);
 buttonLighten.addEventListener("click", setLighten);
+buttonEraser.addEventListener("click", setEraser);
 
 ///////////////////////////////////////////////////////////////////////////
 // Functions
@@ -68,7 +73,19 @@ function setLighten() {
 	enableButton(buttonDarken);
 }
 
-function setEraser() {}
+function setEraser() {
+	eraserMode = !eraserMode;
+	if (eraserMode) {
+		// addGridShader(erasePixel);
+		buttonEraser.textContent = "Set Draw Mode";
+		buttonEraser.classList.add("disabled");
+	} else {
+		// addGridShader(currentShader);
+		buttonEraser.textContent = "Set Eraser Mode";
+		buttonEraser.classList.remove("disabled");
+	}
+	toggleEraser();
+}
 
 function setRainbowMode() {
 	addGridShader(shadePixel, -10, !rainbowMode);
@@ -112,6 +129,19 @@ function addGridShader(shader, ...args) {
 	return currentShader;
 }
 
+function toggleEraser() {
+	const pixels = document.querySelectorAll(".pixel");
+	pixels.forEach((pixel) => {
+		if (!eraserMode) {
+			pixel.removeEventListener("mouseenter", erasePixel);
+			addGridShader();
+		} else {
+			pixel.removeEventListener("mouseenter", pixel.fn);
+			pixel.addEventListener("mouseenter", erasePixel);
+		}
+	});
+}
+
 function shadePixel(pixel, increment, colorRandom = false) {
 	if (!pixel.classList.contains("pixel-draw")) {
 		pixel.classList.add("pixel-draw");
@@ -134,6 +164,14 @@ function shadePixel(pixel, increment, colorRandom = false) {
 				pixel.style.filter = `brightness(${updatedBrightness}%)`;
 			}
 		});
+	}
+}
+
+function erasePixel() {
+	if (this.classList.contains("pixel-draw")) {
+		this.className = "pixel brightness-100";
+		this.style.backgroundColor = defaultErasedColor;
+		this.style.filter = "brightness(100%)";
 	}
 }
 

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Etch-a-Sketch</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="style.css" rel="stylesheet">
+  <script src='scripts.js' defer></script>
+</head>
+
+<body>
+  <div class="header">
+    <div class="top-settings">
+      <div class="resolution">
+        <span class="sub-heading">Resolution</span>
+        <span class="text-content current-resolution">Current: 16 x 16 Pixels</span>
+        <div class="tooltip">
+          <span class="tooltiptext left">Keyboard: P</span>
+          <div class="slide-container">
+            <input type="range" min="1" max="100" value="16" class="slider set-resolution red" name="set-resolution">
+          </div>
+          <!-- <button type="button" class="red set-resolution">Set Resolution</button> -->
+        </div>
+        <div class="loader" style="visibility: hidden"></div>
+      </div>
+      <div class="color">
+        <span class="sub-heading">Color</span>
+        <label for="pick-color">Pick Pen Color</label>
+        <div class="tooltip">
+          <span class="tooltiptext top">Keyboard: C</span>
+          <input type="color" class="pick-color red disabled" name="pick-color" value="#443f40">
+        </div>
+        <div class="tooltip">
+          <span class="tooltiptext bottom">Keyboard: R</span>
+          <button type="button" class="red rainbow-mode">Rainbow! 🌈</button>
+        </div>
+      </div>
+      <div class="shader">
+        <span class="sub-heading">Pick Shader</span>
+        <div class="tooltip">
+          <span class="tooltiptext right">Keyboard: L</span>
+          <button type="button" class="red lighten">Lighten</button>
+        </div>
+        <div class="tooltip">
+          <span class="tooltiptext right">Keyboard: D</span>
+          <button type="button" class="red darken disabled">Darken</button>
+        </div>
+        <div class="tooltip">
+          <span class="tooltiptext right">Keyboard: E</span>
+          <button type="button" class="red eraser">Erase</button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+  <div class="seperator"></div>
+  <div class="heading">MAGIC <span class="main">Etch A Sketch</span> SCREEN</div>
+  <!-- will populate this grid with js, based on user settings -->
+  <div class="grid"></div>
+  <div class="footer">
+    <div class="tooltip">
+      <span class="tooltiptext right">Keyboard: Space</span>
+      <button type="button" class="spinner spinner-left disabled draw">Draw</button>
+    </div>
+    <div class="tooltip">
+      <span class="tooltiptext left">Keyboard: X</span>
+      <button type="button" class="spinner spinner-right clear-grid">Clear Grid</button>
+    </div>
+  </div>
+</body>
+
+</html>

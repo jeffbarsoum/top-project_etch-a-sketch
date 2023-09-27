@@ -13,11 +13,13 @@ const eventHandlers = {};
 let currentIncrement = -10;
 
 let rainbowMode = false;
+let sparkleMode = false;
 let drawMode = true;
 
 const buttonSetResolution = document.querySelector(".set-resolution");
 const buttonPickPenColor = document.querySelector(".pick-color");
 const buttonRainbowMode = document.querySelector(".rainbow-mode");
+const buttonSparkleMode = document.querySelector(".sparkle-mode");
 const buttonLighten = document.querySelector(".lighten");
 const buttonDarken = document.querySelector(".darken");
 const buttonEraser = document.querySelector(".eraser");
@@ -28,6 +30,7 @@ buttonSetResolution.addEventListener("change", setResolution);
 buttonSetResolution.addEventListener("input", setResolutionSetting);
 buttonPickPenColor.addEventListener("change", setColor);
 buttonRainbowMode.addEventListener("click", setRainbowMode);
+buttonSparkleMode.addEventListener("click", setSparkleMode);
 buttonClearGrid.addEventListener("click", clearGrid);
 buttonDarken.addEventListener("click", setDarken);
 buttonLighten.addEventListener("click", setLighten);
@@ -112,7 +115,13 @@ function setColor() {
 	currentPixelColor = document.querySelector(".pick-color").value;
 
 	rainbowMode = false;
-	addGridShader("mouseenter", shadePixel, currentIncrement, rainbowMode);
+	addGridShader(
+		"mouseenter",
+		shadePixel,
+		currentIncrement,
+		rainbowMode,
+		sparkleMode,
+	);
 	enableButton(buttonRainbowMode);
 	buttonPickPenColor.classList.add("disabled");
 	enableDrawMode();
@@ -120,7 +129,13 @@ function setColor() {
 
 async function setDarken() {
 	currentIncrement = -10;
-	addGridShader("mouseenter", shadePixel, currentIncrement, rainbowMode);
+	addGridShader(
+		"mouseenter",
+		shadePixel,
+		currentIncrement,
+		rainbowMode,
+		sparkleMode,
+	);
 	disableButton(buttonDarken);
 	enableButton(buttonLighten);
 	enableButton(buttonEraser);
@@ -129,7 +144,13 @@ async function setDarken() {
 
 function setLighten() {
 	currentIncrement = 10;
-	addGridShader("mouseenter", shadePixel, currentIncrement, rainbowMode);
+	addGridShader(
+		"mouseenter",
+		shadePixel,
+		currentIncrement,
+		rainbowMode,
+		sparkleMode,
+	);
 	disableButton(buttonLighten);
 	enableButton(buttonDarken);
 	enableButton(buttonEraser);
@@ -146,14 +167,40 @@ function setEraser() {
 
 function setRainbowMode() {
 	rainbowMode = !rainbowMode;
-	addGridShader("mouseenter", shadePixel, currentIncrement, rainbowMode);
+	addGridShader(
+		"mouseenter",
+		shadePixel,
+		currentIncrement,
+		rainbowMode,
+		sparkleMode,
+	);
 	enableDrawMode();
 	if (rainbowMode) {
-		disableButton(buttonRainbowMode);
-		buttonPickPenColor.classList.remove("disabled");
+		// disableButton(buttonRainbowMode);
+		buttonRainbowMode.classList.add("white");
+		buttonRainbowMode.classList.remove("red");
 	} else {
-		buttonPickPenColor.classList.add("disabled");
-		enableButton(buttonRainbowMode);
+		buttonRainbowMode.classList.add("red");
+		buttonRainbowMode.classList.remove("white");
+		// enableButton(buttonRainbowMode);
+	}
+}
+function setSparkleMode() {
+	sparkleMode = !sparkleMode;
+	addGridShader(
+		"mouseenter",
+		shadePixel,
+		currentIncrement,
+		rainbowMode,
+		sparkleMode,
+	);
+	enableDrawMode();
+	if (sparkleMode) {
+		buttonSparkleMode.classList.add("white");
+		buttonSparkleMode.classList.remove("red");
+	} else {
+		buttonSparkleMode.classList.add("red");
+		buttonSparkleMode.classList.remove("white");
 	}
 }
 
@@ -232,7 +279,7 @@ function removeListeners(event, eventTarget) {
 ///////////////////////////////////////////////////////////////////////////
 // Shader functions - color / darken / brighten / erase pixel colors
 
-function shadePixel(pixel, increment, colorRandom = false) {
+function shadePixel(pixel, increment, colorRandom = false, sparkle = false) {
 	// color is either the current color set by the user via the color input
 	// or it's a color chosen at random if in Rainbow mode
 	const color = colorRandom ? getRandomColor() : currentPixelColor;
@@ -244,6 +291,13 @@ function shadePixel(pixel, increment, colorRandom = false) {
 	// pixel color as different, as long as we're not in Rainbow mode
 	const isCurrentPixelColor =
 		pixel.style.backgroundColor === hexToRgb(currentPixelColor) && !colorRandom;
+
+	// we add the sparkle effect here
+	if (sparkle) {
+		pixel.textContent = "✨";
+	} else {
+		pixel.textContent = " ";
+	}
 
 	// if the pixel has been previously drawn, or it's the same color as
 	// the current input, change it's brightness according to the shader settings
@@ -280,6 +334,11 @@ function erasePixel(pixel) {
 	pixel.className = "pixel brightness-100";
 	pixel.style.backgroundColor = defaultErasedColor;
 	pixel.style.filter = "brightness(100%)";
+}
+
+function sparklePixel(pixel) {
+	erasePixel(pixel);
+	pixel.className = "pixel sparkle";
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -349,44 +408,9 @@ function getRandomColor() {
 function hexToRgb(hex) {
 	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 
-   const r = parseInt(result[1], 16);
-  const g = parseInt(result[2], 16);
-  const b = parseInt(result[3], 16);
+	const r = parseInt(result[1], 16);
+	const g = parseInt(result[2], 16);
+	const b = parseInt(result[3], 16);
 
-  return result ? `rgb(${r}, ${g}, ${b})` : null;
+	return result ? `rgb(${r}, ${g}, ${b})` : null;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

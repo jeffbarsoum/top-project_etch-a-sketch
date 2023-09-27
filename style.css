@@ -157,12 +157,19 @@ label,
   display: flex;
   flex-direction: column;
   justify-content: center;
-  flex: 1 1 auto;
+  flex: 1 1 0;
 }
 
 .pixel {
   display: flex;
-  flex: 1 1 auto;
+  text-align: center;
+  text-justify: center;
+  flex: 1 1 0;
+  font-size: 1vw;
+  /* min-width: 5px; */
+  /* min-height: 5px; */
+  justify-content: center;
+  align-items: center;
 }
 
 .pixel-draw {

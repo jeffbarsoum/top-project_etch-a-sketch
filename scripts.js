@@ -6,7 +6,7 @@ const defaultPixelCount = 16;
 const defaultPixelColor = "#443f40";
 const defaultErasedColor = "#bcb8b9";
 
-const currentPixelColor = defaultPixelColor;
+let currentPixelColor = defaultPixelColor;
 let currentPixelCount = defaultPixelCount;
 let currentShader;
 const eventHandlers = {};
@@ -109,7 +109,7 @@ function setResolutionSetting() {
 }
 
 function setColor() {
-	const colorInput = document.querySelector(".pick-color").value;
+	currentPixelColor = document.querySelector(".pick-color").value;
 
 	rainbowMode = false;
 	addGridShader("mouseenter", shadePixel, currentIncrement, rainbowMode);
@@ -349,7 +349,7 @@ function getRandomColor() {
 function hexToRgb(hex) {
 	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 
-	const r = parseInt(result[1], 16);
+   const r = parseInt(result[1], 16);
   const g = parseInt(result[2], 16);
   const b = parseInt(result[3], 16);
 
